@@ -149,6 +149,12 @@ typedef struct {
 }ds3_bulk_object_list;
 
 typedef struct {
+    char * name;
+    UINT64 size;
+} file_upload_t;
+
+
+typedef struct {
     ds3_str*                bucket_name;
     uint64_t                cached_size_in_bytes;
     ds3_chunk_ordering      chunk_order;
@@ -175,7 +181,7 @@ typedef struct {
 }ds3_allocate_chunk_response;
 
 typedef struct {
-    ds3_bulk_response* 	  object_list;
+    ds3_bulk_response*    object_list;
     uint64_t              retry_after;
 }ds3_get_available_chunks_response;
 
@@ -254,8 +260,8 @@ LIBRARY_API size_t ds3_read_from_file(void* buffer, size_t size, size_t nmemb, v
 LIBRARY_API size_t ds3_write_to_fd(void* buffer, size_t size, size_t nmemb, void* user_data);
 LIBRARY_API size_t ds3_read_from_fd(void* buffer, size_t size, size_t nmemb, void* user_data);
 
-LIBRARY_API ds3_bulk_object_list* ds3_convert_file_list(const char** file_list, uint64_t num_files);
-LIBRARY_API ds3_bulk_object_list* ds3_convert_file_list_with_basepath(const char** file_list, uint64_t num_files, const char* base_path);
+LIBRARY_API ds3_bulk_object_list* ds3_convert_file_list(const file_upload_t* file_list, uint64_t num_files);
+LIBRARY_API ds3_bulk_object_list* ds3_convert_file_list_with_basepath(const file_upload_t* file_list, uint64_t num_files, const char* base_path);
 LIBRARY_API ds3_bulk_object_list* ds3_convert_object_list(const ds3_object* objects, uint64_t num_objects);
 LIBRARY_API ds3_bulk_object_list* ds3_init_bulk_object_list(uint64_t num_files);
 LIBRARY_API void ds3_free_bulk_object_list(ds3_bulk_object_list* object_list);
