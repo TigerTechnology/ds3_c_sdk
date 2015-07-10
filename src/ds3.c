@@ -178,7 +178,7 @@ static size_t _process_header_line(void* buffer, size_t size, size_t nmemb, void
             char* endpointer;
             uint64_t status_code;
             split_result = g_strsplit(header_buff, " ", 1000);
-            status_code = g_ascii_strtoll(split_result[1], &endpointer, 10);
+            status_code = g_ascii_strtoull(split_result[1], &endpointer, 10);
             if (status_code == 0 && endpointer != NULL) {
                 fprintf(stderr, "Encountered a problem parsing the status code\n");
                 g_strfreev(split_result);
@@ -832,7 +832,7 @@ static uint64_t xml_get_uint64(xmlDocPtr doc, xmlNodePtr child_node) {
     if(text == NULL) {
         return 0;
     }
-    size = strtoul((const char*)text, NULL, 10);
+    size = g_ascii_strtoull((const char*)text, NULL, 10);
     xmlFree(text);
     return size;
 }
@@ -1637,7 +1637,7 @@ ds3_error* ds3_allocate_chunk(const ds3_client* client, const ds3_request* reque
         g_byte_array_free(xml_blob, TRUE);
         if (g_hash_table_contains(response_headers, "Retry-After")) {
             retry_after_header = (ds3_response_header*)g_hash_table_lookup(response_headers, "Retry-After");
-            ds3_response->retry_after = strtoul(retry_after_header->value->value, NULL, 10);
+            ds3_response->retry_after = g_ascii_strtoull(retry_after_header->value->value, NULL, 10);
         } else {
             g_hash_table_destroy(response_headers);
             return _ds3_create_error(DS3_ERROR_REQUEST_FAILED, "We did not get a response and did not find the 'Retry-After Header'");
@@ -1695,7 +1695,7 @@ ds3_error* ds3_get_available_chunks(const ds3_client* client, const ds3_request*
     doc = xmlParseMemory((const char*) xml_blob->data, xml_blob->len);
     if (response_headers != NULL && g_hash_table_contains(response_headers, "Retry-After")) {
         retry_after_header = (ds3_response_header*)g_hash_table_lookup(response_headers, "Retry-After");
-        ds3_response->retry_after = strtoul(retry_after_header->value->value, NULL, 10);
+        ds3_response->retry_after = g_ascii_strtoull(retry_after_header->value->value, NULL, 10);
     }
 
     _parse_master_object_list(doc, &bulk_response);
